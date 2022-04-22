@@ -27,6 +27,8 @@
 * 只针对粤核酸的核酸检测及通信行程卡
 * 不同手机不同分辨率的截图也会对本程序的字串处理有些影响
 * 本程序不保证准确率
+* 无法像肉眼一样分辨P图
+
 # OCR识别的运行环境准备
 https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.4/doc/doc_ch/environment.md
 
