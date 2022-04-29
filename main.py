@@ -51,7 +51,9 @@ def check_date(start_date, last_date, date_orc):
 # 将日期字符串转换成数字
 def format_date(date):
     date = re.sub(r'\D', "", date)[:8]
-    # print('日期转换：', date)
+    print('日期转换：', date)
+    if len(date) < 8:
+        return 20220101
     return int(date)
 
 
@@ -305,6 +307,16 @@ def update_info(name, name_type, total):
         print("检测结果: ", result_ocr)
         print("对比结果:", validate)
 
+    elif total.__contains__('亲属出示') or total.__contains__('成员管理') or total.__contains__('绿码'):
+        image_type = 'GREENCODE'
+        print("图片类型：", '粤康码首页')
+        name_ocr = match(r'个人信息\s*(\S*)', total)
+        # test_time_ocr = match(r'阴性\s*(\S*)', total)
+        validate = '不是核酸检测结果截图，不及格！'
+        print("姓名: ", name_ocr)
+        # print("检测时间: ", test_time_ocr)
+        print("对比结果:", validate)
+
     elif total.__contains__('我的核酸检测记录'):
         image_type = 'MY_RECORD'
         print("图片类型：", '我的核酸检测记录')
@@ -398,6 +410,8 @@ def update_info(name, name_type, total):
             validate = '及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
+        if sample_time_ocr == '' or test_time_ocr == '':
+            validate = '无法判断时间，判为不及格，请注意！'
         print("姓名: " + name_ocr)
         print("采样时间: " + sample_time_ocr)
         print("检测时间: " + test_time_ocr)
@@ -405,8 +419,10 @@ def update_info(name, name_type, total):
         print("对比结果:", validate)
 
     # 时间格式加个空格
-    sample_time_ocr = sample_time_ocr[:10] + ' ' + sample_time_ocr[11:]
-    test_time_ocr = test_time_ocr[:10] + ' ' + test_time_ocr[11:]
+    if sample_time_ocr != '':
+        sample_time_ocr = sample_time_ocr[:10] + ' ' + sample_time_ocr[11:]
+    if test_time_ocr != '':
+        test_time_ocr = test_time_ocr[:10] + ' ' + test_time_ocr[11:]
 
     if name_type == 0:
         info_dict["学生姓名"] = name
@@ -417,6 +433,7 @@ def update_info(name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["同住人1行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
+            info_dict["同住人1核酸图片结果"] = "这是疫苗接种证明，请查看备注。"
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
@@ -430,6 +447,7 @@ def update_info(name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["同住人2行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
+            info_dict["同住人2核酸图片结果"] = "这是疫苗接种证明，请查看备注。"
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
@@ -443,6 +461,7 @@ def update_info(name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["同住人3行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
+            info_dict["同住人3核酸图片结果"] = "这是疫苗接种证明，请查看备注。"
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
@@ -456,6 +475,7 @@ def update_info(name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["同住人4行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
+            info_dict["同住人4核酸图片结果"] = "这是疫苗接种证明，请查看备注。"
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
@@ -469,6 +489,7 @@ def update_info(name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["同住人5行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
+            info_dict["同住人5核酸图片结果"] = "这是疫苗接种证明，请查看备注。"
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
