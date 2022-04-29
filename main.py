@@ -278,7 +278,7 @@ def update_info(name, name_type, total):
     start_date = input_file[1]
     last_date = input_file[2]
 
-    validate = '时间对比不及格'
+    validate = '不及格'
     city_total = ''
     contains_star = '否'
     image_type = ''
@@ -310,11 +310,20 @@ def update_info(name, name_type, total):
     elif total.__contains__('亲属出示') or total.__contains__('成员管理') or total.__contains__('绿码'):
         image_type = 'GREENCODE'
         print("图片类型：", '粤康码首页')
-        name_ocr = match(r'个人信息\s*(\S*)', total)
-        # test_time_ocr = match(r'阴性\s*(\S*)', total)
-        validate = '不是核酸检测结果截图，不及格！'
+        name_ocr = match(r'深圳\s*(\S*)', total)
+        result_ocr = match(r'新冠疫苗\s*(\S*)', total)
+        test_time_ocr = match(r'阴性\s*(\S*)', total)
+        if result_ocr == '24':
+            if int(last_date) == format_date(test_time_ocr):
+                validate = '及格'
+            else:
+                validate = '不是最后一天的检测时间，请注意！'
+        elif result_ocr == '48':
+            if int(last_date) == format_date(test_time_ocr):
+                validate = '不是24小时内核酸结果，请注意！'
         print("姓名: ", name_ocr)
-        # print("检测时间: ", test_time_ocr)
+        print("检测时间: ", test_time_ocr)
+        print("检测结果: " + result_ocr)
         print("对比结果:", validate)
 
     elif total.__contains__('我的核酸检测记录'):
