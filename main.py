@@ -66,7 +66,7 @@ def save_to_file(df, file_name):
         sheet1.append(row)
 
     # 样式_标题行样式
-    style_titleRow = NamedStyle(name='style_titleRow',
+    style_title_row = NamedStyle(name='style_title_row',
                                 font=Font(b=True),  # 粗体
                                 fill=PatternFill(fill_type='solid',  # 指定填充的类型，支持的有：'solid'等。
                                                  start_color='cccccc',  # 指定填充的开始颜色
@@ -82,12 +82,12 @@ def save_to_file(df, file_name):
     line_t = Side(style='thin', color='000000')  # 细边框
     line_m = Side(style='medium', color='000000')  # 粗边框
     border = Border(top=line_m, bottom=line_t, left=line_t, right=line_t)
-    style_border = NamedStyle(name='style_borderRow', border=border)
+    style_border = NamedStyle(name='style_border', border=border)
     # 设置填充颜色
-    Color = ['ffc7ce', 'c6efce', 'ffeb9c']  # 红 绿 黄
-    fill_red = PatternFill('solid', fgColor=Color[0])  # 设置填充颜色为 橙红
-    fill_green = PatternFill('solid', fgColor=Color[1])  # 设置填充颜色为 绿色
-    fill_yellow = PatternFill('solid', fgColor=Color[2])  # 设置填充颜色为 黄色
+    colors = ['ffc7ce', 'c6efce', 'ffeb9c']  # 红 绿 黄
+    fill_red = PatternFill('solid', fgColor=colors[0])  # 设置填充颜色为 橙红
+    fill_green = PatternFill('solid', fgColor=colors[1])  # 设置填充颜色为 绿色
+    fill_yellow = PatternFill('solid', fgColor=colors[2])  # 设置填充颜色为 黄色
 
     # 冻结第一行
     sheet1.freeze_panes = 'A2'
@@ -124,7 +124,7 @@ def save_to_file(df, file_name):
     # 设置标题样式
     for row in sheet1['A1:R1']:  # 设置标题行样式
         for cell in row:
-            cell.style = style_titleRow
+            cell.style = style_title_row
 
     book.save(output_file_name)  # 保存
 
