@@ -17,8 +17,11 @@ uploadPage = '''
         <h3> 
             <ol>
                 <li>上传文件命名格式：班级名-20220504-20220504.xlsx，比如<span style="color: rgb(224, 62, 45);" data-mce-style="color: #e03e2d;">503-20220504-20220504.xlsx。</span></li>
+                <li>命名格式错误将会无法识别。</li>
                 <li>上传文件较大，以及后台识别图像较久，点击上传后，请耐心等待（图片太多可能需要二三十分钟）返回<span style="color: rgb(224, 62, 45);" data-mce-style="color: #e03e2d;">下载文件</span>。</li>
-                <li>出现下载文件即可点击下载查看识别后的结果。</li><li>识别结果仅供参考。</li>
+                <li>保持本页面不要关闭，但可以切换到别的页面。</li>
+                <li>直到本页面出现<span style="color: rgb(224, 62, 45);" data-mce-style="color: #e03e2d;">下载文件</span>即可点击下载查看识别后的结果。</li>
+                <li>识别结果仅供参考。</li>
             </ol>
             <form action="upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="data" />
