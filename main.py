@@ -16,7 +16,7 @@ import numpy as np
 ocr = PaddleOCR(use_angle_cls=True, lang="ch")
 info_dict = {}
 validate_date_delta = 2
-
+notice_date = ''
 
 def check(date, time_ocr):
     if get_date_delta(time_ocr, date) > validate_date_delta:
@@ -98,6 +98,8 @@ def save_to_file(df, file_name):
 
     # 设置姓名列宽度
     name_cols_list = ['A', 'C', 'F', 'I', 'L', 'O']
+    if notice_date == '20220429':
+        name_cols_list = ['A', 'D', 'F', 'H', 'J', 'L']
     for col in name_cols_list:
         sheet1.column_dimensions[col].width = 12
 
@@ -132,52 +134,99 @@ def save_to_file(df, file_name):
 def deal_file():
     file_name = get_excel_file_info()[0]
     # 定义输出的Excel表格的各个栏位
-    df = pd.DataFrame(columns=[
-        "学生姓名",
-        "学生核酸图片结果",
-        "同住人1姓名",
-        "同住人1核酸图片结果",
-        "同住人1行程码图片结果",
-        "同住人2姓名",
-        "同住人2核酸图片结果",
-        "同住人2行程码图片结果",
-        "同住人3姓名",
-        "同住人3核酸图片结果",
-        "同住人3行程码图片结果",
-        "同住人4姓名",
-        "同住人4核酸图片结果",
-        "同住人4行程码图片结果",
-        "同住人5姓名",
-        "同住人5核酸图片结果",
-        "同住人5行程码图片结果",
-        "备注说明"
-    ])
+    if notice_date == '2022429':
+        df = pd.DataFrame(columns=[
+            "学生姓名",
+            "学生的粤康码结果",
+            "学生核酸图片结果",
+            "同住人1姓名",
+            # "同住人1核酸图片结果",
+            "同住人1行程码图片结果",
+            "同住人2姓名",
+            # "同住人2核酸图片结果",
+            "同住人2行程码图片结果",
+            "同住人3姓名",
+            # "同住人3核酸图片结果",
+            "同住人3行程码图片结果",
+            "同住人4姓名",
+            # "同住人4核酸图片结果",
+            "同住人4行程码图片结果",
+            "同住人5姓名",
+            # "同住人5核酸图片结果",
+            "同住人5行程码图片结果",
+            "备注说明"
+        ])
+    else:
+        df = pd.DataFrame(columns=[
+            "学生姓名",
+            "学生核酸图片结果",
+            "同住人1姓名",
+            "同住人1核酸图片结果",
+            "同住人1行程码图片结果",
+            "同住人2姓名",
+            "同住人2核酸图片结果",
+            "同住人2行程码图片结果",
+            "同住人3姓名",
+            "同住人3核酸图片结果",
+            "同住人3行程码图片结果",
+            "同住人4姓名",
+            "同住人4核酸图片结果",
+            "同住人4行程码图片结果",
+            "同住人5姓名",
+            "同住人5核酸图片结果",
+            "同住人5行程码图片结果",
+            "备注说明"
+        ])
 
     # 获得学生及同住人信息
-    info_list = process_input.read_excel_info(file_name,
-                                              img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
+    if notice_date == '2022429':
+        info_list = process_input.read_excel_info(file_name,
+                                                  img_col_index=[3, 4, 6, 8, 10, 12, 14])
+    else:
+        info_list = process_input.read_excel_info(file_name,
+                                                  img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
     # 打印列表
     pprint(info_list)
 
     # 提取学生及同住人信息
     for student_info in info_list:
-        student_name = student_info.get('学生姓名')
-        student_result_image = student_info.get('学生的24小时核酸检测结果截图')
-        student_relative1_name = student_info.get('同住人1的姓名')
-        student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
-        student_relative1_travel_image = student_info.get('同住人1行程码截图')
-        student_relative2_name = student_info.get('同住人2的姓名')
-        student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
-        student_relative2_travel_image = student_info.get('同住人2行程码截图')
-        student_relative3_name = student_info.get('同住人3的姓名')
-        student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
-        student_relative3_travel_image = student_info.get('同住人3行程码截图')
-        student_relative4_name = student_info.get('同住人4的姓名')
-        student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
-        student_relative4_travel_image = student_info.get('同住人4行程码截图')
-        student_relative5_name = student_info.get('同住人5的姓名')
-        student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
-        student_relative5_travel_image = student_info.get('同住人5行程码截图')
+        if notice_date == '2022429':
+            student_name = student_info.get('学生姓名')
+            student_qrcode_image = student_info.get('学生的粤康码首页截图')
+            student_result_image = student_info.get('学生的24小时核酸检测结果截图')
+            student_relative1_name = student_info.get('同住人1的姓名')
+            # student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
+            student_relative1_travel_image = student_info.get('同住人1行程码截图')
+            student_relative2_name = student_info.get('同住人2的姓名')
+            # student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
+            student_relative2_travel_image = student_info.get('同住人2行程码截图')
+            student_relative3_name = student_info.get('同住人3的姓名')
+            # student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
+            student_relative3_travel_image = student_info.get('同住人3行程码截图')
+            student_relative4_name = student_info.get('同住人4的姓名')
+            # student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
+            student_relative4_travel_image = student_info.get('同住人4行程码截图')
+            student_relative5_name = student_info.get('同住人5的姓名')
+            # student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
+            student_relative5_travel_image = student_info.get('同住人5行程码截图')
+        else:
+            student_name = student_info.get('学生姓名')
+            student_result_image = student_info.get('学生的24小时核酸检测结果截图')
+            student_relative1_name = student_info.get('同住人1的姓名')
+            student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
+            student_relative1_travel_image = student_info.get('同住人1行程码截图')
+            student_relative2_name = student_info.get('同住人2的姓名')
+            student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
+            student_relative2_travel_image = student_info.get('同住人2行程码截图')
+            student_relative3_name = student_info.get('同住人3的姓名')
+            student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
+            student_relative3_travel_image = student_info.get('同住人3行程码截图')
+            student_relative4_name = student_info.get('同住人4的姓名')
+            student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
+            student_relative4_travel_image = student_info.get('同住人4行程码截图')
+            student_relative5_name = student_info.get('同住人5的姓名')
+            student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
+            student_relative5_travel_image = student_info.get('同住人5行程码截图')
 
         # 识别图片
         total = ""
@@ -185,69 +234,100 @@ def deal_file():
         if student_name != '':
             name = student_name
             name_type = 0
-            img_path = student_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+            if notice_date == '2022429':
+                # 第一张图
+                img_path = student_qrcode_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+                # 第二张图
+                img_path = student_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                # 第一张图
+                img_path = student_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         if student_relative1_name != '':
             name = student_relative1_name
             name_type = 1
+            if notice_date == '2022429':
+                img_path = student_relative1_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                img_path = student_relative1_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
-            img_path = student_relative1_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
-
-            img_path = student_relative1_travel_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+                img_path = student_relative1_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         if student_relative2_name != '':
             name = student_relative2_name
             name_type = 2
+            if notice_date == '2022429':
+                img_path = student_relative2_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                img_path = student_relative2_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
-            img_path = student_relative2_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
-
-            img_path = student_relative2_travel_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+                img_path = student_relative2_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         if student_relative3_name != '':
             name = student_relative3_name
             name_type = 3
+            if notice_date == '2022429':
+                img_path = student_relative3_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                img_path = student_relative3_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
-            img_path = student_relative3_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
-
-            img_path = student_relative3_travel_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+                img_path = student_relative3_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         if student_relative4_name != '':
             name = student_relative4_name
             name_type = 4
+            if notice_date == '2022429':
+                img_path = student_relative4_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                img_path = student_relative4_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
-            img_path = student_relative4_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
-
-            img_path = student_relative4_travel_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+                img_path = student_relative4_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         if student_relative5_name != '':
             name = student_relative5_name
             name_type = 5
+            if notice_date == '2022429':
+                img_path = student_relative5_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
+            else:
+                img_path = student_relative5_result_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
-            img_path = student_relative5_result_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
-
-            img_path = student_relative5_travel_image
-            total = do_ocr(img_path)
-            update_info(name, name_type, total)
+                img_path = student_relative5_travel_image
+                total = do_ocr(img_path)
+                update_info(name, name_type, total)
 
         df = df.append(info_dict, ignore_index=True)
         info_dict.clear()
@@ -268,6 +348,9 @@ def do_ocr(img_path):
     total = total.replace('o', '')
     total = total.replace('○', '')
     total = total.replace('③', '')
+    total = total.replace('√', '')
+    total = total.replace('已完成全程接种 ', '')
+    total = total.replace('「', ' ')
     print("初步处理后的文字：", total)
     return total
 
@@ -307,12 +390,12 @@ def update_info(name, name_type, total):
         print("检测结果: ", result_ocr)
         print("对比结果:", validate)
 
-    elif total.__contains__('亲属出示') or total.__contains__('成员管理') or total.__contains__('绿码'):
-        image_type = 'GREENCODE'
+    elif total.__contains__('亲属出示') or total.__contains__('管理') or total.__contains__('播报'):
+        image_type = 'QRCODE'
         print("图片类型：", '粤康码首页')
         name_ocr = match(r'深圳\s*(\S*)', total)
         result_ocr = match(r'新冠疫苗\s*(\S*)', total)
-        test_time_ocr = match(r'阴性\s*(\S*)', total)
+        test_time_ocr = match(r'阴性\s*(\S*)', total)  # 不是阴性我料你也不敢提交啊
         if result_ocr == '24':
             if int(last_date) == format_date(test_time_ocr):
                 validate = '及格'
@@ -321,6 +404,8 @@ def update_info(name, name_type, total):
         elif result_ocr == '48':
             if int(last_date) == format_date(test_time_ocr):
                 validate = '不是24小时内核酸结果，请注意！'
+        else:
+            validate = '不是48小时内核酸结果，请注意！'
         print("姓名: ", name_ocr)
         print("检测时间: ", test_time_ocr)
         print("检测结果: " + result_ocr)
@@ -435,10 +520,15 @@ def update_info(name, name_type, total):
 
     if name_type == 0:
         info_dict["学生姓名"] = name
-        info_dict["学生核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr, sample_time_ocr,
+        if image_type == 'QRCODE':
+            info_dict["学生的粤康码结果"] = "{0}\n检测时间： {1}\n检测结果： {2}\n是否及格： {3}".format(name_ocr, test_time_ocr,
+                                                                            result_ocr, validate)
+        else:
+            info_dict["学生核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr, sample_time_ocr,
                                                                                          test_time_ocr, result_ocr,
                                                                                          validate)
     elif name_type == 1:
+        info_dict["同住人1姓名"] = name
         if image_type == 'TRAVEL':
             info_dict["同住人1行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
@@ -446,13 +536,13 @@ def update_info(name, name_type, total):
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
-            info_dict["同住人1姓名"] = name
             info_dict["同住人1核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr,
                                                                                                sample_time_ocr,
                                                                                                test_time_ocr,
                                                                                                result_ocr,
                                                                                                validate)
     elif name_type == 2:
+        info_dict["同住人2姓名"] = name
         if image_type == 'TRAVEL':
             info_dict["同住人2行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
@@ -460,13 +550,13 @@ def update_info(name, name_type, total):
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
-            info_dict["同住人2姓名"] = name
             info_dict["同住人2核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr,
                                                                                                sample_time_ocr,
                                                                                                test_time_ocr,
                                                                                                result_ocr,
                                                                                                validate)
     elif name_type == 3:
+        info_dict["同住人3姓名"] = name
         if image_type == 'TRAVEL':
             info_dict["同住人3行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
@@ -474,13 +564,13 @@ def update_info(name, name_type, total):
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
-            info_dict["同住人3姓名"] = name
             info_dict["同住人3核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr,
                                                                                                sample_time_ocr,
                                                                                                test_time_ocr,
                                                                                                result_ocr,
                                                                                                validate)
     elif name_type == 4:
+        info_dict["同住人4姓名"] = name
         if image_type == 'TRAVEL':
             info_dict["同住人4行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
@@ -488,13 +578,13 @@ def update_info(name, name_type, total):
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
-            info_dict["同住人4姓名"] = name
             info_dict["同住人4核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr,
                                                                                                sample_time_ocr,
                                                                                                test_time_ocr,
                                                                                                result_ocr,
                                                                                                validate)
     elif name_type == 5:
+        info_dict["同住人5姓名"] = name
         if image_type == 'TRAVEL':
             info_dict["同住人5行程码图片结果"] = final_result
         elif image_type == 'VACCINE':
@@ -502,7 +592,6 @@ def update_info(name, name_type, total):
             info_dict["备注说明"] = "这是疫苗接种证明\n" + "姓名： " + name_ocr + "\n" + "疫苗名称: " \
                                 + vaccine_name_ocr + "\n" + "接种时间: " + vaccine_time_ocr
         else:
-            info_dict["同住人5姓名"] = name
             info_dict["同住人5核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr,
                                                                                                sample_time_ocr,
                                                                                                test_time_ocr,
@@ -533,11 +622,15 @@ def file_filter(f):
         return True
     return False
 
+def main(argv):
+    print("通知日期： " + argv)
+
 
 if __name__ == '__main__':
     # f = open('LOG-20220410.txt', 'a')
     # sys.stdout = f
     # sys.stderr = f
+    notice_date = sys.argv[1]
     start_time = time.time()
     fire.Fire(deal_file)
     end_time = time.time()
