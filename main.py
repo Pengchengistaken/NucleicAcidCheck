@@ -1,4 +1,5 @@
 import os
+import sys
 import openpyxl
 import copy
 from openpyxl.styles import Alignment, PatternFill, NamedStyle, Font, Border, Side
@@ -8,7 +9,6 @@ from paddleocr import PaddleOCR
 import pandas as pd
 import re
 import time
-import fire
 import process_input
 from pprint import pprint
 import numpy as np
@@ -134,7 +134,7 @@ def save_to_file(df, file_name):
 def deal_file():
     file_name = get_excel_file_info()[0]
     # 定义输出的Excel表格的各个栏位
-    if notice_date == '2022429':
+    if notice_date == '20220429':
         df = pd.DataFrame(columns=[
             "学生姓名",
             "学生的粤康码结果",
@@ -179,7 +179,7 @@ def deal_file():
         ])
 
     # 获得学生及同住人信息
-    if notice_date == '2022429':
+    if notice_date == '20220429':
         info_list = process_input.read_excel_info(file_name,
                                                   img_col_index=[3, 4, 6, 8, 10, 12, 14])
     else:
@@ -190,7 +190,7 @@ def deal_file():
 
     # 提取学生及同住人信息
     for student_info in info_list:
-        if notice_date == '2022429':
+        if notice_date == '20220429':
             student_name = student_info.get('学生姓名')
             student_qrcode_image = student_info.get('学生的粤康码首页截图')
             student_result_image = student_info.get('学生的24小时核酸检测结果截图')
@@ -234,7 +234,7 @@ def deal_file():
         if student_name != '':
             name = student_name
             name_type = 0
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 # 第一张图
                 img_path = student_qrcode_image
                 total = do_ocr(img_path)
@@ -252,7 +252,7 @@ def deal_file():
         if student_relative1_name != '':
             name = student_relative1_name
             name_type = 1
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
                 update_info(name, name_type, total)
@@ -268,7 +268,7 @@ def deal_file():
         if student_relative2_name != '':
             name = student_relative2_name
             name_type = 2
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
                 update_info(name, name_type, total)
@@ -284,7 +284,7 @@ def deal_file():
         if student_relative3_name != '':
             name = student_relative3_name
             name_type = 3
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
                 update_info(name, name_type, total)
@@ -300,7 +300,7 @@ def deal_file():
         if student_relative4_name != '':
             name = student_relative4_name
             name_type = 4
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
                 update_info(name, name_type, total)
@@ -316,7 +316,7 @@ def deal_file():
         if student_relative5_name != '':
             name = student_relative5_name
             name_type = 5
-            if notice_date == '2022429':
+            if notice_date == '20220429':
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
                 update_info(name, name_type, total)
@@ -631,8 +631,9 @@ if __name__ == '__main__':
     # sys.stdout = f
     # sys.stderr = f
     notice_date = sys.argv[1]
+    print(notice_date)
     start_time = time.time()
-    fire.Fire(deal_file)
+    deal_file()
     end_time = time.time()
     print("运行时间:", end_time - start_time)
     # f.close()
