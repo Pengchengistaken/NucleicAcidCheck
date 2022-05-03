@@ -131,8 +131,7 @@ def save_to_file(df, file_name):
     book.save(output_file_name)  # 保存
 
 
-def deal_file():
-    file_name = get_excel_file_info()[0]
+def deal_file(notice_date, file_path):
     # 定义输出的Excel表格的各个栏位
     if notice_date == '20220429':
         df = pd.DataFrame(columns=[
@@ -180,10 +179,10 @@ def deal_file():
 
     # 获得学生及同住人信息
     if notice_date == '20220429':
-        info_list = process_input.read_excel_info(file_name,
+        info_list = process_input.read_excel_info(file_path,
                                                   img_col_index=[3, 4, 6, 8, 10, 12, 14])
     else:
-        info_list = process_input.read_excel_info(file_name,
+        info_list = process_input.read_excel_info(file_path,
                                                   img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
     # 打印列表
     pprint(info_list)
@@ -230,6 +229,7 @@ def deal_file():
 
         # 识别图片
         total = ""
+        file_name_and_date = get_excel_file_info(file_path)
         print("==============================================================")
         if student_name != '':
             name = student_name
@@ -238,16 +238,16 @@ def deal_file():
                 # 第一张图
                 img_path = student_qrcode_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
                 # 第二张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 # 第一张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         if student_relative1_name != '':
             name = student_relative1_name
@@ -255,15 +255,15 @@ def deal_file():
             if notice_date == '20220429':
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 img_path = student_relative1_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         if student_relative2_name != '':
             name = student_relative2_name
@@ -271,15 +271,15 @@ def deal_file():
             if notice_date == '20220429':
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 img_path = student_relative2_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         if student_relative3_name != '':
             name = student_relative3_name
@@ -287,15 +287,15 @@ def deal_file():
             if notice_date == '20220429':
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 img_path = student_relative3_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         if student_relative4_name != '':
             name = student_relative4_name
@@ -303,15 +303,15 @@ def deal_file():
             if notice_date == '20220429':
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 img_path = student_relative4_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         if student_relative5_name != '':
             name = student_relative5_name
@@ -319,19 +319,19 @@ def deal_file():
             if notice_date == '20220429':
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
             else:
                 img_path = student_relative5_result_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
-                update_info(name, name_type, total)
+                update_info(file_name_and_date,name, name_type, total)
 
         df = df.append(info_dict, ignore_index=True)
         info_dict.clear()
-    save_to_file(df, file_name)
+    save_to_file(df, file_path)
 
 
 def do_ocr(img_path):
@@ -355,11 +355,10 @@ def do_ocr(img_path):
     return total
 
 
-def update_info(name, name_type, total):
+def update_info(file_name_and_date, name, name_type, total):
     # 时间范围需要从文件名读取
-    input_file = get_excel_file_info()
-    start_date = input_file[1]
-    last_date = input_file[2]
+    start_date = file_name_and_date[1]
+    last_date = file_name_and_date[2]
 
     validate = '不及格'
     city_total = ''
@@ -601,39 +600,24 @@ def update_info(name, name_type, total):
 
 # 文件名必须是两个日期来命名：xxx-20220407-20220410.xlsx
 # 返回最新创建时间的文件
-def get_excel_file_info():
+def get_excel_file_info(file_path):
     file_name_and_date = []
-    dir_list = os.listdir()
-    dir_list = list(filter(file_filter, dir_list))
-    dir_list = sorted(dir_list, key=lambda x: os.path.getmtime(os.path.join('.', x)), reverse=True)
-    print("文件列表: ", dir_list)
-    file_name = dir_list[0]
-    start_date = file_name[-22:-14]
-    last_date = file_name[-13:-5]
-    file_name_and_date.append(file_name)  # 文件名
+    start_date = file_path[-22:-14]
+    last_date = file_path[-13:-5]
+    file_name_and_date.append(file_path)  # 文件名
     file_name_and_date.append(start_date)  # 开始日期
     file_name_and_date.append(last_date)  # 结束日期
     print("表格名称参数：", file_name_and_date)
     return file_name_and_date
 
 
-def file_filter(f):
-    if f[-5:] in ['.xlsx']:
-        return True
-    return False
-
-def main(argv):
-    print("通知日期： " + argv)
-
-
 if __name__ == '__main__':
     # f = open('LOG-20220410.txt', 'a')
     # sys.stdout = f
     # sys.stderr = f
-    notice_date = sys.argv[1]
-    print(notice_date)
     start_time = time.time()
-    deal_file()
+    notice_date = sys.argv[1]
+    deal_file(notice_date, sys.argv[2])
     end_time = time.time()
     print("运行时间:", end_time - start_time)
     # f.close()
