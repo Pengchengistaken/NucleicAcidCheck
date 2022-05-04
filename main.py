@@ -136,8 +136,8 @@ def deal_file(notice_date, file_path):
     if notice_date == '20220429':
         df = pd.DataFrame(columns=[
             "学生姓名",
-            "学生的粤康码结果",
             "学生核酸图片结果",
+            "学生行程码图片结果",
             "同住人1姓名",
             # "同住人1核酸图片结果",
             "同住人1行程码图片结果",
@@ -191,23 +191,23 @@ def deal_file(notice_date, file_path):
     for student_info in info_list:
         if notice_date == '20220429':
             student_name = student_info.get('学生姓名')
-            student_qrcode_image = student_info.get('学生的粤康码首页截图')
-            student_result_image = student_info.get('学生的24小时核酸检测结果截图')
+            student_result_image = student_info.get('学生5月4日当天检测的24小时核酸检测结果截图')
+            student_travel_image = student_info.get('学生5月4日当天的行程卡截图')
             student_relative1_name = student_info.get('同住人1的姓名')
             # student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
             student_relative1_travel_image = student_info.get('同住人1行程码截图')
             student_relative2_name = student_info.get('同住人2的姓名')
             # student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
-            student_relative2_travel_image = student_info.get('同住人2行程码截图')
+            student_relative2_travel_image = student_info.get('同住人2行程卡截图')
             student_relative3_name = student_info.get('同住人3的姓名')
             # student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
-            student_relative3_travel_image = student_info.get('同住人3行程码截图')
+            student_relative3_travel_image = student_info.get('同住人3行程卡截图')
             student_relative4_name = student_info.get('同住人4的姓名')
             # student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
-            student_relative4_travel_image = student_info.get('同住人4行程码截图')
+            student_relative4_travel_image = student_info.get('同住人4行程卡截图')
             student_relative5_name = student_info.get('同住人5的姓名')
             # student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
-            student_relative5_travel_image = student_info.get('同住人5行程码截图')
+            student_relative5_travel_image = student_info.get('同住人5行程卡截图')
         else:
             student_name = student_info.get('学生姓名')
             student_result_image = student_info.get('学生的24小时核酸检测结果截图')
@@ -236,11 +236,11 @@ def deal_file(notice_date, file_path):
             name_type = 0
             if notice_date == '20220429':
                 # 第一张图
-                img_path = student_qrcode_image
+                img_path = student_result_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
                 # 第二张图
-                img_path = student_result_image
+                img_path = student_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
             else:
@@ -351,6 +351,12 @@ def do_ocr(img_path):
     total = total.replace('√', '')
     total = total.replace('已完成全程接种 ', '')
     total = total.replace('「', ' ')
+    total = total.replace('「', '')
+    total = total.replace('」', ' ')
+    total = total.replace('丨', ' ')
+    total = total.replace('》', '')
+    total = total.replace('>', '')
+    total = total.replace('<', '')
     print("初步处理后的文字：", total)
     return total
 
@@ -397,10 +403,10 @@ def update_info(file_name_and_date, name, name_type, total):
         test_time_ocr = match(r'阴性\s*(\S*)', total)  # 不是阴性我料你也不敢提交啊
         if result_ocr == '24':
             if int(last_date) == format_date(test_time_ocr):
-                validate = '及格'
+                validate = '24小时'
             else:
                 validate = '不是最后一天的检测时间，请注意！'
-        elif result_ocr == '48':
+        elif result_ocr == '48小时':
             if int(last_date) == format_date(test_time_ocr):
                 validate = '不是24小时内核酸结果，请注意！'
         else:
@@ -470,6 +476,10 @@ def update_info(file_name_and_date, name, name_type, total):
         if check_date(start_date, last_date, update_time_ocr):
             if contains_star == '否':
                 validate_travel = '及格'
+        if len(city_orc) > 1:
+            validate_travel = '包含深圳以外城市，请注意！'
+        if '深圳' not in city_orc:
+            validate_travel = '没有包含深圳，请注意！'
         final_result = phone_ocr + '\n' + update_time_ocr + '\n' + city_total + '\n是否带星: ' + contains_star + '\n' + validate_travel
         print("手机号： " + phone_ocr)
         print("更新时间：" + update_time_ocr)
@@ -519,8 +529,10 @@ def update_info(file_name_and_date, name, name_type, total):
 
     if name_type == 0:
         info_dict["学生姓名"] = name
-        if image_type == 'QRCODE':
-            info_dict["学生的粤康码结果"] = "{0}\n检测时间： {1}\n检测结果： {2}\n是否及格： {3}".format(name_ocr, test_time_ocr,
+        if image_type == 'TRAVEL':
+            info_dict["学生行程码图片结果"] = final_result
+        elif image_type == 'QRCODE':
+            info_dict["学生核酸图片结果"] = "{0}\n检测时间： {1}\n检测结果： {2}\n是否及格： {3}\n 无法判断采样时间，需要注意！".format(name_ocr, test_time_ocr,
                                                                             result_ocr, validate)
         else:
             info_dict["学生核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr, sample_time_ocr,
