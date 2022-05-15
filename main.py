@@ -540,9 +540,9 @@ def update_info(file_name_and_date, name, name_type, total):
 
     # 时间格式加个空格
     if sample_time_ocr != '':
-        sample_time_ocr = sample_time_ocr[:10] + ' ' + sample_time_ocr[11:]
+        sample_time_ocr = sample_time_ocr[:10] + ' ' + sample_time_ocr[10:]
     if test_time_ocr != '':
-        test_time_ocr = test_time_ocr[:10] + ' ' + test_time_ocr[11:]
+        test_time_ocr = test_time_ocr[:10] + ' ' + test_time_ocr[10:]
 
     if name_type == 0:
         info_dict["学生姓名"] = name
