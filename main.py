@@ -386,7 +386,7 @@ def update_info(file_name_and_date, name, name_type, total):
         test_time_ocr = match(r'检测时间\s*(\S*)', total)
         result_ocr = match(r'检测结果\s*(\S*)', total.replace(name_ocr, ''))
         if check_date(start_date, last_date, sample_time_ocr):
-            validate = '时间对比及格'
+            validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
         print("姓名: ", name_ocr)
