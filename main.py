@@ -98,8 +98,8 @@ def save_to_file(df, file_name):
 
     # 设置姓名列宽度
     name_cols_list = ['A', 'C', 'F', 'I', 'L', 'O']
-    if notice_date == '20220429':
-        name_cols_list = ['A', 'D', 'F', 'H', 'J', 'L']
+    if notice_date == '20220515':
+        name_cols_list = ['A', 'C', 'E', 'G', 'I', 'K']
     for col in name_cols_list:
         sheet1.column_dimensions[col].width = 12
 
@@ -133,11 +133,11 @@ def save_to_file(df, file_name):
 
 def deal_file(notice_date, file_path):
     # 定义输出的Excel表格的各个栏位
-    if notice_date == '20220429':
+    if notice_date == '20220515':
         df = pd.DataFrame(columns=[
             "学生姓名",
             "学生核酸图片结果",
-            "学生行程码图片结果",
+            # "学生行程码图片结果",
             "同住人1姓名",
             # "同住人1核酸图片结果",
             "同住人1行程码图片结果",
@@ -178,9 +178,9 @@ def deal_file(notice_date, file_path):
         ])
 
     # 获得学生及同住人信息
-    if notice_date == '20220429':
+    if notice_date == '20220515':
         info_list = process_input.read_excel_info(file_path,
-                                                  img_col_index=[3, 4, 6, 8, 10, 12, 14])
+                                                  img_col_index=[3, 5, 7, 9, 11, 13])
     else:
         info_list = process_input.read_excel_info(file_path,
                                                   img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
@@ -189,25 +189,25 @@ def deal_file(notice_date, file_path):
 
     # 提取学生及同住人信息
     for student_info in info_list:
-        if notice_date == '20220429':
+        if notice_date == '20220515':
             student_name = student_info.get('学生姓名')
-            student_result_image = student_info.get('学生5月4日当天检测的24小时核酸检测结果截图')
-            student_travel_image = student_info.get('学生5月4日当天的行程卡截图')
+            student_result_image = student_info.get('学生5月15日当天检测的24小时核酸检测结果截图')
+            # student_travel_image = student_info.get('学生5月15日当天的行程卡截图')
             student_relative1_name = student_info.get('同住人1的姓名')
             # student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
-            student_relative1_travel_image = student_info.get('同住人1行程码截图')
+            student_relative1_travel_image = student_info.get('同住人1的5月15日行程卡截图')
             student_relative2_name = student_info.get('同住人2的姓名')
             # student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
-            student_relative2_travel_image = student_info.get('同住人2行程卡截图')
+            student_relative2_travel_image = student_info.get('同住人2的5月15日行程卡截图')
             student_relative3_name = student_info.get('同住人3的姓名')
             # student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
-            student_relative3_travel_image = student_info.get('同住人3行程卡截图')
+            student_relative3_travel_image = student_info.get('同住人3的5月15日行程卡截图')
             student_relative4_name = student_info.get('同住人4的姓名')
             # student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
-            student_relative4_travel_image = student_info.get('同住人4行程卡截图')
+            student_relative4_travel_image = student_info.get('同住人4的5月15日行程卡截图')
             student_relative5_name = student_info.get('同住人5的姓名')
             # student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
-            student_relative5_travel_image = student_info.get('同住人5行程卡截图')
+            student_relative5_travel_image = student_info.get('同住人5的5月15日行程卡截图')
         else:
             student_name = student_info.get('学生姓名')
             student_result_image = student_info.get('学生的24小时核酸检测结果截图')
@@ -234,15 +234,15 @@ def deal_file(notice_date, file_path):
         if student_name != '':
             name = student_name
             name_type = 0
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 # 第一张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
                 # 第二张图
-                img_path = student_travel_image
-                total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                # img_path = student_travel_image
+                # total = do_ocr(img_path)
+                # update_info(file_name_and_date,name, name_type, total)
             else:
                 # 第一张图
                 img_path = student_result_image
@@ -252,7 +252,7 @@ def deal_file(notice_date, file_path):
         if student_relative1_name != '':
             name = student_relative1_name
             name_type = 1
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
@@ -268,7 +268,7 @@ def deal_file(notice_date, file_path):
         if student_relative2_name != '':
             name = student_relative2_name
             name_type = 2
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
@@ -284,7 +284,7 @@ def deal_file(notice_date, file_path):
         if student_relative3_name != '':
             name = student_relative3_name
             name_type = 3
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
@@ -300,7 +300,7 @@ def deal_file(notice_date, file_path):
         if student_relative4_name != '':
             name = student_relative4_name
             name_type = 4
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
@@ -316,7 +316,7 @@ def deal_file(notice_date, file_path):
         if student_relative5_name != '':
             name = student_relative5_name
             name_type = 5
-            if notice_date == '20220429':
+            if notice_date == '20220515':
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date,name, name_type, total)
@@ -430,7 +430,7 @@ def update_info(file_name_and_date, name, name_type, total):
         if result_ocr.__contains__('未出结果'):  # 未出结果的话，检测时间也会没有。
             test_time_ocr = ''  # 避免拿到前次的检测时间
         if check_date(start_date, last_date, sample_time_ocr):
-            validate = '及格'
+            validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
         print("姓名: " + name_ocr)
@@ -451,8 +451,15 @@ def update_info(file_name_and_date, name, name_type, total):
         sample_time_ocr = match(r'采样时间\s*(\S*)', total)
         test_time_ocr = match(r'检测时间\s*(\S*)', total)
         result_ocr = match(r'检测结果\s*(\S*)', total)
+
+        # 特殊处理，有的截图被音量键挡住了
+        if result_ocr.__contains__('检测中'):
+            if not sample_time_ocr:
+                sample_time_ocr = match(r'间\s*(\S*)', total)
+
+
         if check_date(start_date, last_date, sample_time_ocr):
-            validate = '及格'
+            validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
         print("姓名: " + name_ocr)
@@ -461,24 +468,30 @@ def update_info(file_name_and_date, name, name_type, total):
         print("检测结果: " + result_ocr)
         print("对比结果:", validate)
 
-    elif total.__contains__('通信大数据'):
+    elif total.__contains__('通信大数据') or total.__contains__('绿色行程卡'):
         image_type = 'TRAVEL'
         print("图片类型：", '通信行程卡')
         total = total.replace('新于：', '新于： ')  # '新于：'加多个空格
         phone_ocr = match(r'请收下绿色行程卡\s*(\S*)', total).replace('的动态行程卡', '')
         update_time_ocr = match(r'新于：\s*(\S*)', total)
+        if not update_time_ocr:
+            update_time_ocr = match(r'更新：\s*(\S*)', total)
         if total.__contains__('市*'):
             contains_star = '是'
         total = total.replace(' ', '')  # 去掉空格
         city_orc = re.findall(r'省(.*?)市', total)  # 获得城市名称
         for city in city_orc:  # 列出城市
             city_total += city + ' '
+
+        # 特殊处理：如果有可能，去掉多余的字
+        city_total.replace('结果包含您在前14天内到访的国家（地区）与停留4小时以上的国内城', '')
+
         if check_date(start_date, last_date, update_time_ocr):
             if contains_star == '否':
-                validate_travel = '及格'
+                validate_travel = '时间及格'
         if len(city_orc) > 1:
             validate_travel = '包含深圳以外城市，请注意！'
-        if '深圳' not in city_orc:
+        if '深' not in city_total:  # 地级市带“深”的也就深圳
             validate_travel = '没有包含深圳，请注意！'
         final_result = phone_ocr + '\n' + update_time_ocr + '\n' + city_total + '\n是否带星: ' + contains_star + '\n' + validate_travel
         print("手机号： " + phone_ocr)
@@ -503,14 +516,18 @@ def update_info(file_name_and_date, name, name_type, total):
         image_type = 'UNKNOWN'
         print("图片类型： ", '没有匹配已知的截图类型')
         print('尽量识别中....请注意该图片')
+        total = total.replace('：', ' ')
         name_ocr = match(r'检测中\s*(\S*)', total)
         if not name_ocr:
             name_ocr = match(r'BEGIN\s*(\S*)', total)
         sample_time_ocr = match(r'采样时间\s*(\S*)', total)
         test_time_ocr = match(r'检测时间\s*(\S*)', total)
         result_ocr = match(r'检测结果\s*(\S*)', total)
+        if not result_ocr:
+            total = total.replace(name_ocr, ' ')  # 去掉多余的干扰信息
+            result_ocr = match(r'BEGIN\s*(\S*)', total)
         if check_date(start_date, last_date, sample_time_ocr):
-            validate = '及格'
+            validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
         if sample_time_ocr == '' or test_time_ocr == '':
