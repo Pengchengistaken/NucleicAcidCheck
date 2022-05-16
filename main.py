@@ -12,11 +12,13 @@ import time
 import process_input
 from pprint import pprint
 import numpy as np
+import fire
 
-ocr = PaddleOCR(use_angle_cls=True, lang="ch")
+ocr = PaddleOCR(use_gpu=False, use_angle_cls=True, lang="ch")
 info_dict = {}
 validate_date_delta = 2
-notice_date = ''
+notice_date = '20220515'
+
 
 def check(date, time_ocr):
     if get_date_delta(time_ocr, date) > validate_date_delta:
@@ -67,16 +69,16 @@ def save_to_file(df, file_name):
 
     # 样式_标题行样式
     style_title_row = NamedStyle(name='style_title_row',
-                                font=Font(b=True),  # 粗体
-                                fill=PatternFill(fill_type='solid',  # 指定填充的类型，支持的有：'solid'等。
-                                                 start_color='cccccc',  # 指定填充的开始颜色
-                                                 end_color='cccccc'  # 指定填充的结束颜色
-                                                 ),
-                                alignment=Alignment(horizontal='center',  # 水平居中
-                                                    vertical='center',  # 垂直居中
-                                                    wrap_text=True,  # 自动换行
-                                                    )
-                                )
+                                 font=Font(b=True),  # 粗体
+                                 fill=PatternFill(fill_type='solid',  # 指定填充的类型，支持的有：'solid'等。
+                                                  start_color='cccccc',  # 指定填充的开始颜色
+                                                  end_color='cccccc'  # 指定填充的结束颜色
+                                                  ),
+                                 alignment=Alignment(horizontal='center',  # 水平居中
+                                                     vertical='center',  # 垂直居中
+                                                     wrap_text=True,  # 自动换行
+                                                     )
+                                 )
 
     # 边框样式
     line_t = Side(style='thin', color='000000')  # 细边框
@@ -93,7 +95,7 @@ def save_to_file(df, file_name):
     sheet1.freeze_panes = 'A2'
 
     # 设置列宽度
-    for i in range(1, sheet1.max_column+1):
+    for i in range(1, sheet1.max_column + 1):
         sheet1.column_dimensions[get_column_letter(i)].width = 30
 
     # 设置姓名列宽度
@@ -116,6 +118,7 @@ def save_to_file(df, file_name):
             for name_col in name_cols_list:
                 if name_col in cell.coordinate:
                     if str(cell.value) != 'nan':
+                        print("单元格的值是：" + cell.value)
                         cell.fill = fill_yellow
             if cell.value is not None:
                 value = str(cell.value)
@@ -131,7 +134,7 @@ def save_to_file(df, file_name):
     book.save(output_file_name)  # 保存
 
 
-def deal_file(notice_date, file_path):
+def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
     # 定义输出的Excel表格的各个栏位
     if notice_date == '20220515':
         df = pd.DataFrame(columns=[
@@ -179,11 +182,9 @@ def deal_file(notice_date, file_path):
 
     # 获得学生及同住人信息
     if notice_date == '20220515':
-        info_list = process_input.read_excel_info(file_path,
-                                                  img_col_index=[3, 5, 7, 9, 11, 13])
+        info_list = process_input.read_excel_info(file_path, img_col_index=[3, 5, 7, 9, 11, 13])
     else:
-        info_list = process_input.read_excel_info(file_path,
-                                                  img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
+        info_list = process_input.read_excel_info(file_path, img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
     # 打印列表
     pprint(info_list)
 
@@ -238,7 +239,7 @@ def deal_file(notice_date, file_path):
                 # 第一张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
                 # 第二张图
                 # img_path = student_travel_image
                 # total = do_ocr(img_path)
@@ -247,7 +248,7 @@ def deal_file(notice_date, file_path):
                 # 第一张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         if student_relative1_name != '':
             name = student_relative1_name
@@ -255,15 +256,15 @@ def deal_file(notice_date, file_path):
             if notice_date == '20220515':
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
             else:
                 img_path = student_relative1_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         if student_relative2_name != '':
             name = student_relative2_name
@@ -271,15 +272,15 @@ def deal_file(notice_date, file_path):
             if notice_date == '20220515':
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
             else:
                 img_path = student_relative2_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         if student_relative3_name != '':
             name = student_relative3_name
@@ -287,15 +288,15 @@ def deal_file(notice_date, file_path):
             if notice_date == '20220515':
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
             else:
                 img_path = student_relative3_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         if student_relative4_name != '':
             name = student_relative4_name
@@ -303,15 +304,15 @@ def deal_file(notice_date, file_path):
             if notice_date == '20220515':
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
             else:
                 img_path = student_relative4_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         if student_relative5_name != '':
             name = student_relative5_name
@@ -319,15 +320,15 @@ def deal_file(notice_date, file_path):
             if notice_date == '20220515':
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
             else:
                 img_path = student_relative5_result_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
-                update_info(file_name_and_date,name, name_type, total)
+                update_info(file_name_and_date, name, name_type, total)
 
         df = df.append(info_dict, ignore_index=True)
         info_dict.clear()
@@ -343,10 +344,11 @@ def do_ocr(img_path):
     print("原始识别出来的文字: ", total)
     # 处理下total中的特殊字符
     # 再有遇到特殊字符不好处理的可以在此添加
-    total = 'BEGIN ' + total  # 在开头加个BEGIN字样，后面有些特殊情况会使用
+
     total = total.replace(' o 0  ', '')
     total = total.replace('o', '')
     total = total.replace('○', '')
+    total = total.replace('O', '')
     total = total.replace('③', '')
     total = total.replace('√', '')
     total = total.replace('已完成全程接种 ', '')
@@ -357,6 +359,8 @@ def do_ocr(img_path):
     total = total.replace('》', '')
     total = total.replace('>', '')
     total = total.replace('<', '')
+    total = re.sub(r'[A-Z][a-z]*', '', total)
+    total = 'BEGIN ' + total  # 在开头加个BEGIN字样，后面有些特殊情况会使用
     print("初步处理后的文字：", total)
     return total
 
@@ -420,8 +424,13 @@ def update_info(file_name_and_date, name, name_type, total):
         image_type = 'MY_RECORD'
         print("图片类型：", '我的核酸检测记录')
         if total.count('我的核酸检测记录') > 1:  # 通常截图会有两个‘我的核酸检测记录'，也有的情况是只有一个
-            total = total.replace('我的核酸检测记录', ' ', 1)  # 只需要一次’我的核酸检测记录‘字串
-        total = total.replace('刷新', ' ', 1)  # 去掉多余的干扰信息
+            if match(r'我的核酸检测记录\s*(\S*)', total) == '我的核酸检测记录':
+                total = total.replace('我的核酸检测记录', ' ', 1)  # 只需要一次’我的核酸检测记录‘字串
+                total = total.replace(match(r'我的核酸检测记录\s*(\S*)', total), ' ', 1)  # 去掉多余的干扰信息
+            else:
+                total = total.replace('我的核酸检测记录', ' ', 1)  # 只需要一次’我的核酸检测记录‘字串
+                total = total.replace('刷新', ' ', 1)  # 去掉多余的干扰信息
+        print("处理我的核酸检测记录的识别结果后的文字： " + total)
         name_ocr = match(r'我的核酸检测记录\s*(\S*)', total)
         sample_time_ocr = match(r'采样时间：\s*(\S*)', total)
         test_time_ocr = match(r'检测时间：\s*(\S*)', total)
@@ -447,6 +456,7 @@ def update_info(file_name_and_date, name, name_type, total):
         total = total.replace('检测中', ' ', 1)  # 去掉多余的干扰信息
         total = total.replace('检测完成', ' ', 1)  # 去掉多余的干扰信息
         total = total.replace('刷新', ' ', 1)  # 去掉多余的干扰信息
+        print("处理核酸检测记录的识别结果后的文字： " + total)
         name_ocr = match(r'核酸检测记录\s*(\S*)', total)
         sample_time_ocr = match(r'采样时间\s*(\S*)', total)
         test_time_ocr = match(r'检测时间\s*(\S*)', total)
@@ -456,7 +466,6 @@ def update_info(file_name_and_date, name, name_type, total):
         if result_ocr.__contains__('检测中'):
             if not sample_time_ocr:
                 sample_time_ocr = match(r'间\s*(\S*)', total)
-
 
         if check_date(start_date, last_date, sample_time_ocr):
             validate = '时间及格'
@@ -493,6 +502,9 @@ def update_info(file_name_and_date, name, name_type, total):
             validate_travel = '包含深圳以外城市，请注意！'
         if '深' not in city_total:  # 地级市带“深”的也就深圳
             validate_travel = '没有包含深圳，请注意！'
+
+        # 格式化一下时间
+        update_time_ocr = update_time_ocr[:10] + ' ' + update_time_ocr[10:]
         final_result = phone_ocr + '\n' + update_time_ocr + '\n' + city_total + '\n是否带星: ' + contains_star + '\n' + validate_travel
         print("手机号： " + phone_ocr)
         print("更新时间：" + update_time_ocr)
@@ -549,12 +561,13 @@ def update_info(file_name_and_date, name, name_type, total):
         if image_type == 'TRAVEL':
             info_dict["学生行程码图片结果"] = final_result
         elif image_type == 'QRCODE':
-            info_dict["学生核酸图片结果"] = "{0}\n检测时间： {1}\n检测结果： {2}\n是否及格： {3}\n 无法判断采样时间，需要注意！".format(name_ocr, test_time_ocr,
-                                                                            result_ocr, validate)
+            info_dict["学生核酸图片结果"] = "{0}\n检测时间： {1}\n检测结果： {2}\n是否及格： {3}\n 无法判断采样时间，需要注意！".format(name_ocr,
+                                                                                                   test_time_ocr,
+                                                                                                   result_ocr, validate)
         else:
             info_dict["学生核酸图片结果"] = "{0}\n采样时间： {1}\n检测时间： {2}\n检测结果： {3}\n是否及格： {4}".format(name_ocr, sample_time_ocr,
-                                                                                         test_time_ocr, result_ocr,
-                                                                                         validate)
+                                                                                             test_time_ocr, result_ocr,
+                                                                                             validate)
     elif name_type == 1:
         info_dict["同住人1姓名"] = name
         if image_type == 'TRAVEL':
@@ -645,8 +658,7 @@ if __name__ == '__main__':
     # sys.stdout = f
     # sys.stderr = f
     start_time = time.time()
-    notice_date = sys.argv[1]
-    deal_file(notice_date, sys.argv[2])
+    fire.Fire(deal_file)
     end_time = time.time()
     print("运行时间:", end_time - start_time)
     # f.close()
