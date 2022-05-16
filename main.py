@@ -338,7 +338,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
 def do_ocr(img_path):
     print("正在识别图像：", img_path)
     total = ''
-    results = ocr.ocr(img_path, cls=True)
+    results = ocr.ocr(img_path, cls=False)
     for line in results:
         total += line[1][0] + " "
     print("原始识别出来的文字: ", total)
@@ -431,7 +431,9 @@ def update_info(file_name_and_date, name, name_type, total):
                 total = total.replace('我的核酸检测记录', ' ', 1)  # 只需要一次’我的核酸检测记录‘字串
                 total = total.replace('刷新', ' ', 1)  # 去掉多余的干扰信息
         print("处理我的核酸检测记录的识别结果后的文字： " + total)
-        name_ocr = match(r'我的核酸检测记录\s*(\S*)', total)
+        only_chinese = re.sub(r'[^\u4e00-\u9fa5]+', ' ', total)
+        print("只有中文的文字： " + only_chinese)
+        name_ocr = match(r'我的核酸检测记录\s*(\S*)', only_chinese)
         sample_time_ocr = match(r'采样时间：\s*(\S*)', total)
         test_time_ocr = match(r'检测时间：\s*(\S*)', total)
         total = total.replace(name_ocr, ' ')  # 去掉名字，让’结果'字串排在'我的核酸检测记录'后面
@@ -442,6 +444,8 @@ def update_info(file_name_and_date, name, name_type, total):
             validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
+        if name_ocr != name:
+            validate += "\n" + "名字不一致，需要注意。（可能传错图或者识别错误）"
         print("姓名: " + name_ocr)
         print("采样时间: " + sample_time_ocr)
         print("检测时间: " + test_time_ocr)
@@ -451,13 +455,15 @@ def update_info(file_name_and_date, name, name_type, total):
     elif total.__contains__('核酸检测记录'):
         image_type = 'RECORD'
         print("图片类型：", '核酸检测记录')
-        if total.count('核酸检测记录') > 1:  # 通常截图会有两个‘我的核酸检测记录'，也有的情况是只有一个
-            total = total.replace('核酸检测记录', ' ', 1)  # 只需要一次’我的核酸检测记录‘字串
+        if total.count('核酸检测记录') > 1:  # 通常截图会有两个‘核酸检测记录'，也有的情况是只有一个
+            total = total.replace('核酸检测记录', ' ', 1)  # 只需要一次’核酸检测记录‘字串
         total = total.replace('检测中', ' ', 1)  # 去掉多余的干扰信息
         total = total.replace('检测完成', ' ', 1)  # 去掉多余的干扰信息
         total = total.replace('刷新', ' ', 1)  # 去掉多余的干扰信息
         print("处理核酸检测记录的识别结果后的文字： " + total)
-        name_ocr = match(r'核酸检测记录\s*(\S*)', total)
+        only_chinese = re.sub(r'[^\u4e00-\u9fa5]+', ' ', total)
+        print("只有中文的文字： " + only_chinese)
+        name_ocr = match(r'核酸检测记录\s*(\S*)', only_chinese)
         sample_time_ocr = match(r'采样时间\s*(\S*)', total)
         test_time_ocr = match(r'检测时间\s*(\S*)', total)
         result_ocr = match(r'检测结果\s*(\S*)', total)
@@ -471,6 +477,8 @@ def update_info(file_name_and_date, name, name_type, total):
             validate = '时间及格'
         if result_ocr != '阴性':
             validate += "\n" + "检测结果没有‘阴性’字样，需要注意！"
+        if name_ocr != name:
+            validate += "\n" + "名字不一致，需要注意。（可能传错图或者识别错误）"
         print("姓名: " + name_ocr)
         print("采样时间: " + sample_time_ocr)
         print("检测时间: " + test_time_ocr)
