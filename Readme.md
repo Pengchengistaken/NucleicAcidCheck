@@ -43,8 +43,10 @@ https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.4/doc/doc_ch/environmen
 * 卫健委开放查询API给教育局，家长授权教育局查询，班主任只需要拉取数据即可。希望这种方式能够尽快实现，这样不要占用老师的时间，老师有更多时间来做教育工作！
 
 # 安装
+```commandline
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
+```
 
 # 环境问题
 ## ImportError: DLL load failed while importing win32file: 找不到指定的模块
