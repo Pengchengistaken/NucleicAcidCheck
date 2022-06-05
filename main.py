@@ -17,7 +17,7 @@ import fire
 ocr = PaddleOCR(use_gpu=False, use_angle_cls=True, lang="ch")
 info_dict = {}
 validate_date_delta = 2
-notice_date = '20220515'
+notice_date = '20220605'
 
 
 def check(date, time_ocr):
@@ -100,7 +100,7 @@ def save_to_file(df, file_name):
 
     # 设置姓名列宽度
     name_cols_list = ['A', 'C', 'F', 'I', 'L', 'O']
-    if notice_date == '20220515':
+    if notice_date == '20220605':
         name_cols_list = ['A', 'C', 'E', 'G', 'I', 'K']
     for col in name_cols_list:
         sheet1.column_dimensions[col].width = 12
@@ -134,9 +134,9 @@ def save_to_file(df, file_name):
     book.save(output_file_name)  # 保存
 
 
-def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
+def deal_file(notice_date='20220605', file_path='503-20220605-20220605.xlsx'):
     # 定义输出的Excel表格的各个栏位
-    if notice_date == '20220515':
+    if notice_date == '20220605':
         df = pd.DataFrame(columns=[
             "学生姓名",
             "学生核酸图片结果",
@@ -181,7 +181,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         ])
 
     # 获得学生及同住人信息
-    if notice_date == '20220515':
+    if notice_date == '20220605':
         info_list = process_input.read_excel_info(file_path, img_col_index=[3, 5, 7, 9, 11, 13])
     else:
         info_list = process_input.read_excel_info(file_path, img_col_index=[3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18])
@@ -190,25 +190,25 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
 
     # 提取学生及同住人信息
     for student_info in info_list:
-        if notice_date == '20220515':
+        if notice_date == '20220605':
             student_name = student_info.get('学生姓名')
-            student_result_image = student_info.get('学生5月15日当天检测的24小时核酸检测结果截图')
+            student_result_image = student_info.get('学生6月5日当天检测的24小时核酸检测结果截图')
             # student_travel_image = student_info.get('学生5月15日当天的行程卡截图')
             student_relative1_name = student_info.get('同住人1的姓名')
             # student_relative1_result_image = student_info.get('同住人1的24小时核酸检测结果截图')
-            student_relative1_travel_image = student_info.get('同住人1的5月15日行程卡截图')
+            student_relative1_travel_image = student_info.get('同住人1行程卡截图')
             student_relative2_name = student_info.get('同住人2的姓名')
             # student_relative2_result_image = student_info.get('同住人2的24小时核酸检测结果截图')
-            student_relative2_travel_image = student_info.get('同住人2的5月15日行程卡截图')
+            student_relative2_travel_image = student_info.get('同住人2行程卡截图')
             student_relative3_name = student_info.get('同住人3的姓名')
             # student_relative3_result_image = student_info.get('同住人3的24小时核酸检测结果截图')
-            student_relative3_travel_image = student_info.get('同住人3的5月15日行程卡截图')
+            student_relative3_travel_image = student_info.get('同住人3行程卡截图')
             student_relative4_name = student_info.get('同住人4的姓名')
             # student_relative4_result_image = student_info.get('同住人4的24小时核酸检测结果截图')
-            student_relative4_travel_image = student_info.get('同住人4的5月15日行程卡截图')
+            student_relative4_travel_image = student_info.get('同住人4行程卡截图')
             student_relative5_name = student_info.get('同住人5的姓名')
             # student_relative5_result_image = student_info.get('同住人5的24小时核酸检测结果截图')
-            student_relative5_travel_image = student_info.get('同住人5的5月15日行程卡截图')
+            student_relative5_travel_image = student_info.get('同住人5行程卡截图')
         else:
             student_name = student_info.get('学生姓名')
             student_result_image = student_info.get('学生的24小时核酸检测结果截图')
@@ -235,7 +235,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_name != '':
             name = student_name
             name_type = 0
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 # 第一张图
                 img_path = student_result_image
                 total = do_ocr(img_path)
@@ -253,7 +253,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_relative1_name != '':
             name = student_relative1_name
             name_type = 1
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 img_path = student_relative1_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date, name, name_type, total)
@@ -269,7 +269,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_relative2_name != '':
             name = student_relative2_name
             name_type = 2
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 img_path = student_relative2_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date, name, name_type, total)
@@ -285,7 +285,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_relative3_name != '':
             name = student_relative3_name
             name_type = 3
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 img_path = student_relative3_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date, name, name_type, total)
@@ -301,7 +301,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_relative4_name != '':
             name = student_relative4_name
             name_type = 4
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 img_path = student_relative4_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date, name, name_type, total)
@@ -317,7 +317,7 @@ def deal_file(notice_date='20220515', file_path='503-20220515-20220515.xlsx'):
         if student_relative5_name != '':
             name = student_relative5_name
             name_type = 5
-            if notice_date == '20220515':
+            if notice_date == '20220605':
                 img_path = student_relative5_travel_image
                 total = do_ocr(img_path)
                 update_info(file_name_and_date, name, name_type, total)
